@@ -9,33 +9,58 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Member Details</div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <strong>Name:</strong> {{ $member->name }}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Email:</strong> {{ $member->email }}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Created:</strong> {{ $member->created_at->format('M d, Y') }}
-                    </div>
-                    
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('members.edit', $member) }}" class="btn btn-primary">Edit</a>
-                        <a href="{{ route('members.index') }}" class="btn btn-secondary">Back to List</a>
-                        <form action="{{ route('members.destroy', $member) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
-                    </div>
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Detalles del Miembro</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <strong>Nombre:</strong>
+                    <p>{{ $member->nombre }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Cédula:</strong>
+                    <p>{{ $member->cedula }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Fecha de Nacimiento:</strong>
+                    <p>{{ $member->nacimiento }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Correo:</strong>
+                    <p>{{ $member->correo }}</p>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <strong>Teléfono:</strong>
+                    <p>{{ $member->telefono }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Dirección:</strong>
+                    <p>{{ $member->direccion }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Unidad:</strong>
+                    <p><span class="badge bg-secondary">{{ $member->unidad }}</span></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Creado:</strong>
+                    <p>{{ $member->created_at->format('d/m/Y') }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-end">
+            <a href="{{ route('members.index') }}" class="btn btn-secondary me-2">Volver</a>
+            <a href="{{ route('members.edit', $member) }}" class="btn btn-warning me-2">Editar</a>
+            <form action="{{ route('members.destroy', $member) }}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Eliminar miembro?')">Eliminar</button>
+            </form>
         </div>
     </div>
 </div>

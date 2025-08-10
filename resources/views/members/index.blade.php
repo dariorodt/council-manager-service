@@ -9,37 +9,58 @@
 @endsection
 
 @section('content')
-    <h1>Miembros</h1>
-    <a href="{{ route('members.create') }}">Nuevo miembro</a>
-    @if(session('success'))
-        <div>{{ session('success') }}</div>
-    @endif
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Cédula</th>
-                <th>Unidad</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($members as $member)
-                <tr>
-                    <td>{{ $member->nombre }}</td>
-                    <td>{{ $member->cedula }}</td>
-                    <td>{{ $member->unidad }}</td>
-                    <td>
-                        <a href="{{ route('members.show', $member) }}">Ver</a>
-                        <a href="{{ route('members.edit', $member) }}">Editar</a>
-                        <form action="{{ route('members.destroy', $member) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" onclick="return confirm('¿Eliminar miembro?')">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Miembros</h2>
+    <a href="{{ route('members.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus"></i> Nuevo miembro
+    </a>
+</div>
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cédula</th>
+                        <th>Unidad</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($members as $member)
+                        <tr>
+                            <td>{{ $member->nombre }}</td>
+                            <td>{{ $member->cedula }}</td>
+                            <td><span class="badge bg-secondary">{{ $member->unidad }}</span></td>
+                            <td>
+                                <a href="{{ route('members.show', $member) }}" class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="{{ route('members.destroy', $member) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar miembro?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 @endsection

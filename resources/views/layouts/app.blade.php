@@ -11,28 +11,26 @@
 </head>
 <body>
     <div class="d-flex">
-        <!-- Sidebar -->
-        <nav class="bg-dark text-white" style="width: 250px; min-height: 100vh;">
+        <nav class="bg-dark" style="width: 250px; min-height: 100vh;">
             <div class="p-3">
-                <h5>Council Manager</h5>
+                <h5 class="text-white">Council Manager</h5>
             </div>
-            <ul class="nav nav-pills flex-column">
+            <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                        <i class="bi bi-house"></i> Dashboard
+                    <a class="nav-link text-white {{ request()->routeIs('dashboard') ? 'bg-primary' : '' }}" href="{{ route('dashboard') }}">
+                        <i class="bi bi-house me-2"></i>Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('members.*') ? 'active' : '' }}" href="{{ route('members.index') }}">
-                        <i class="bi bi-people"></i> Members
+                    <a class="nav-link text-white {{ request()->routeIs('members.*') ? 'bg-primary' : '' }}" href="{{ route('members.index') }}">
+                        <i class="bi bi-people me-2"></i>Members
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <!-- Main Content -->
+        
         <div class="flex-grow-1">
-            <!-- Top Bar -->
             <nav class="navbar navbar-light bg-light border-bottom">
                 <div class="container-fluid">
                     <h4 class="mb-0">@yield('page-title', 'Dashboard')</h4>
@@ -56,16 +54,14 @@
                     </div>
                 </div>
             </nav>
-
-            <!-- Breadcrumb -->
+            
             <nav class="bg-light px-3 py-2">
                 <ol class="breadcrumb mb-0">
                     @yield('breadcrumb')
                 </ol>
             </nav>
-
-            <!-- Page Content -->
-            <main class="p-3">
+            
+            <main class="p-4">
                 @yield('content')
             </main>
         </div>
