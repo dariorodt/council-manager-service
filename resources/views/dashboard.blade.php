@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('page-title', 'Dashboard')
+@section('page-title', 'Inicio')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active">Dashboard</li>
+    <li class="breadcrumb-item active">Inicio</li>
 @endsection
 
 @section('content')

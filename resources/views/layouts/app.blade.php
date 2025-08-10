@@ -18,13 +18,38 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link text-white {{ request()->routeIs('dashboard') ? 'bg-primary' : '' }}" href="{{ route('dashboard') }}">
-                        <i class="bi bi-house me-2"></i>Dashboard
+                        <i class="bi bi-house me-2"></i>Inicio
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('members.*') ? 'bg-primary' : '' }}" href="{{ route('members.index') }}">
-                        <i class="bi bi-people me-2"></i>Members
+                    <a class="nav-link text-white" href="#">
+                        <i class="bi bi-briefcase me-2"></i>Ejecutiva
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">
+                        <i class="bi bi-calculator me-2"></i>Administrativa Financiera
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">
+                        <i class="bi bi-shield-check me-2"></i>Contraloría Social
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#configMenu" role="button" aria-expanded="{{ request()->routeIs('members.*') ? 'true' : 'false' }}">
+                        <span><i class="bi bi-gear me-2"></i>Configuración</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('members.*') ? 'show' : '' }}" id="configMenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ request()->routeIs('members.*') ? 'bg-primary' : '' }}" href="{{ route('members.index') }}">
+                                    <i class="bi bi-people me-2"></i>Miembros
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
             </ul>
         </nav>

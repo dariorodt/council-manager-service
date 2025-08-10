@@ -3,8 +3,9 @@
 @section('page-title', 'Member Details')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('members.index') }}">Members</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
+    <li class="breadcrumb-item">Configuración</li>
+    <li class="breadcrumb-item"><a href="{{ route('members.index') }}">Miembros</a></li>
     <li class="breadcrumb-item active">{{ $member->name }}</li>
 @endsection
 
