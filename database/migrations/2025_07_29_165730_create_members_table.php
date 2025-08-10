@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('address');
             $table->enum('unit', [
-                'Ejeecutiva', 
+                'Ejecutiva', 
                 'Administrativa Financiera', 
                 'Contraloría Social'
             ]);

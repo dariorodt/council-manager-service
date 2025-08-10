@@ -32,15 +32,19 @@
                         <th>Nombre</th>
                         <th>Cédula</th>
                         <th>Unidad</th>
+                        <th>Período de Mandato</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($members as $member)
                         <tr>
-                            <td>{{ $member->nombre }}</td>
-                            <td>{{ $member->cedula }}</td>
-                            <td><span class="badge bg-secondary">{{ $member->unidad }}</span></td>
+                            <td>{{ $member->name }}</td>
+                            <td>{{ $member->id_document }}</td>
+                            <td><span class="badge bg-secondary">{{ $member->unit }}</span></td>
+                            <td>{{ $member->membership_start_date->format('d/m/Y') }} - {{ $member->membership_end_date->format('d/m/Y') }}</td>
+                            <td><span class="badge {{ $member->status == 'active' ? 'bg-success' : 'bg-danger' }}">{{ ucfirst($member->status) }}</span></td>
                             <td>
                                 <a href="{{ route('members.show', $member) }}" class="btn btn-sm btn-outline-info">
                                     <i class="bi bi-eye"></i>

@@ -18,37 +18,45 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <strong>Nombre:</strong>
-                    <p>{{ $member->nombre }}</p>
+                    <p>{{ $member->name }}</p>
                 </div>
                 <div class="mb-3">
                     <strong>Cédula:</strong>
-                    <p>{{ $member->cedula }}</p>
+                    <p>{{ $member->id_document }}</p>
                 </div>
                 <div class="mb-3">
                     <strong>Fecha de Nacimiento:</strong>
-                    <p>{{ $member->nacimiento }}</p>
+                    <p>{{ $member->date_of_birth }}</p>
                 </div>
                 <div class="mb-3">
                     <strong>Correo:</strong>
-                    <p>{{ $member->correo }}</p>
+                    <p>{{ $member->email }}</p>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     <strong>Teléfono:</strong>
-                    <p>{{ $member->telefono }}</p>
+                    <p>{{ $member->phone }}</p>
                 </div>
                 <div class="mb-3">
                     <strong>Dirección:</strong>
-                    <p>{{ $member->direccion }}</p>
+                    <p>{{ $member->address }}</p>
                 </div>
                 <div class="mb-3">
                     <strong>Unidad:</strong>
-                    <p><span class="badge bg-secondary">{{ $member->unidad }}</span></p>
+                    <p><span class="badge bg-secondary">{{ $member->unit }}</span></p>
                 </div>
                 <div class="mb-3">
-                    <strong>Creado:</strong>
-                    <p>{{ $member->created_at->format('d/m/Y') }}</p>
+                    <strong>Inicio de Mandato:</strong>
+                    <p>{{ $member->membership_start_date->format('d/m/Y') }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Fin de Mandato:</strong>
+                    <p>{{ $member->membership_end_date->format('d/m/Y') }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Estado:</strong>
+                    <p><span class="badge {{ $member->status == 'active' ? 'bg-success' : 'bg-danger' }}">{{ ucfirst($member->status) }}</span></p>
                 </div>
             </div>
         </div>

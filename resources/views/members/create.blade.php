@@ -68,6 +68,20 @@
                 <label class="form-label">Dirección</label>
                 <input type="text" class="form-control" name="direccion" value="{{ old('direccion') }}" required>
             </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Inicio de Mandato</label>
+                        <input type="date" class="form-control" name="inicio_mandato" value="{{ old('inicio_mandato') }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Fin de Mandato</label>
+                        <input type="date" class="form-control" name="fin_mandato" value="{{ old('fin_mandato') }}" required>
+                    </div>
+                </div>
+            </div>
             <div class="d-flex justify-content-end">
                 <a href="{{ route('members.index') }}" class="btn btn-secondary me-2">Cancelar</a>
                 <button type="submit" class="btn btn-primary">Guardar</button>

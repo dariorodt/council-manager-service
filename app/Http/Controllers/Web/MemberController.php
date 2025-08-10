@@ -25,11 +25,29 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:members,email',
+            'nombre' => 'required|string|max:255',
+            'cedula' => 'required|string|max:255',
+            'nacimiento' => 'required|date',
+            'correo' => 'required|email|unique:members,email',
+            'telefono' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'unidad' => 'required|string|max:255',
+            'inicio_mandato' => 'required|date',
+            'fin_mandato' => 'required|date|after:inicio_mandato',
         ]);
 
-        Member::create($validated);
+        Member::create([
+            'name' => $validated['nombre'],
+            'id_document' => $validated['cedula'],
+            'date_of_birth' => $validated['nacimiento'],
+            'email' => $validated['correo'],
+            'phone' => $validated['telefono'],
+            'address' => $validated['direccion'],
+            'unit' => $validated['unidad'],
+            'membership_start_date' => $validated['inicio_mandato'],
+            'membership_end_date' => $validated['fin_mandato'],
+            'status' => 'active',
+        ]);
 
         return redirect()->route('members.index')->with('success', 'Member created successfully.');
     }
@@ -50,11 +68,28 @@ class MemberController extends Controller
     public function update(Request $request, Member $member)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:members,email,' . $member->id,
+            'nombre' => 'required|string|max:255',
+            'cedula' => 'required|string|max:255',
+            'nacimiento' => 'required|date',
+            'correo' => 'required|email|unique:members,email,' . $member->id,
+            'telefono' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'unidad' => 'required|string|max:255',
+            'inicio_mandato' => 'required|date',
+            'fin_mandato' => 'required|date|after:inicio_mandato',
         ]);
 
-        $member->update($validated);
+        $member->update([
+            'name' => $validated['nombre'],
+            'id_document' => $validated['cedula'],
+            'date_of_birth' => $validated['nacimiento'],
+            'email' => $validated['correo'],
+            'phone' => $validated['telefono'],
+            'address' => $validated['direccion'],
+            'unit' => $validated['unidad'],
+            'membership_start_date' => $validated['inicio_mandato'],
+            'membership_end_date' => $validated['fin_mandato'],
+        ]);
 
         return redirect()->route('members.index')->with('success', 'Member updated successfully.');
     }
