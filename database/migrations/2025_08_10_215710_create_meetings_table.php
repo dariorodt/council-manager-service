@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assemblies', function (Blueprint $table) {
+        Schema::create('meetings', function (Blueprint $table) {
             $table->id();
             $table->string('correlative');
-            $table->enum('type', ['General', 'Extraordinaria', 'De Ciudadanos', 'Informativa']);
+            $table->enum('type', ['General', 'Extraordinaria', 'Informativa']);
+            $table->enum('unit', ['Ejecutiva', 'Administrativa Financiera', 'Contraloría Social']);
+            $table->unsignedBigInteger('committee_id')->nullable();
             $table->text('reason');
             $table->enum('status', ['Programada', 'Finalizada']);
             $table->dateTime('scheduled_date');
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assemblies');
+        Schema::dropIfExists('meetings');
     }
 };

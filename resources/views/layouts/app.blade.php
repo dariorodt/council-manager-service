@@ -27,6 +27,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white {{ request()->routeIs('documents.*') ? 'bg-primary' : '' }}" href="{{ route('documents.index') }}">
+                        <i class="bi bi-file-earmark me-2"></i>Documentos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ request()->routeIs('assemblies.*') ? 'bg-primary' : '' }}" href="{{ route('assemblies.index') }}">
+                        <i class="bi bi-people-fill me-2"></i>Asambleas
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white" href="#">
                         <i class="bi bi-calculator me-2"></i>Administrativa Financiera
                     </a>

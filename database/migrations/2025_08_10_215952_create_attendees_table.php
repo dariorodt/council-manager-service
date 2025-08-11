@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documents', function (Blueprint $table) {
+        Schema::create('attendees', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('assembly_id')->nullable();
+            $table->unsignedBigInteger('meeting_id')->nullable();
+            $table->boolean('is_member')->default(false);
             $table->string('name');
-            $table->string('extension');
-            $table->text('description')->nullable();
-            $table->text('transcription')->nullable();
-            $table->string('url');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->string('position')->nullable();
+            $table->boolean('attended')->default(false);
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('attendees');
     }
 };
