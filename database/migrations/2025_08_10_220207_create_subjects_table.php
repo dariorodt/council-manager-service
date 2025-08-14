@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('meeting_id')->nullable();
             $table->string('title');
             $table->string('proposed_by');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->enum('state', ['Programado', 'Debatido', 'Solventado']);
             $table->timestamps();
         });

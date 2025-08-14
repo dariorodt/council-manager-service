@@ -130,14 +130,13 @@
             <!-- Documents Section -->
             <h6 class="mt-4">Documentos</h6>
             <div class="mb-3">
-                @foreach($documents as $document)
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="document_ids[]" value="{{ $document->id }}" id="doc{{ $document->id }}">
-                        <label class="form-check-label" for="doc{{ $document->id }}">
-                            {{ $document->name }}
-                        </label>
-                    </div>
-                @endforeach
+                <select class="form-select" name="document_ids[]" multiple size="6" id="documents-select">
+                    @foreach($documents as $document)
+                        <option value="{{ $document->id }}">{{ $document->name }}</option>
+                    @endforeach
+                </select>
+                <small class="form-text text-muted">Mantén Ctrl presionado para seleccionar múltiples documentos. Usa el campo de búsqueda para filtrar.</small>
+                <input type="text" class="form-control mt-2" id="document-search" placeholder="Buscar documentos...">
             </div>
             
             <div class="d-flex justify-content-end">
@@ -223,6 +222,18 @@ document.addEventListener('click', function(e) {
     if (e.target.classList.contains('remove-subject')) {
         e.target.closest('.subject-item').remove();
     }
+});
+
+// Document search functionality
+document.getElementById('document-search').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const select = document.getElementById('documents-select');
+    const options = select.querySelectorAll('option');
+    
+    options.forEach(option => {
+        const text = option.textContent.toLowerCase();
+        option.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
 });
 </script>
 @endsection
