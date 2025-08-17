@@ -10,8 +10,14 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
+    <!-- Mobile Menu Button -->
+    <button class="btn btn-dark d-lg-none position-fixed" style="top: 10px; left: 10px; z-index: 1050;" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+        <i class="bi bi-list"></i>
+    </button>
+
     <div class="d-flex">
-        <nav class="bg-dark" style="width: 250px; min-height: 100vh;">
+        <!-- Sidebar for desktop -->
+        <nav class="bg-dark d-none d-lg-block" style="width: 250px; min-height: 100vh;">
             <div class="p-3">
                 <h5 class="text-white">Council Manager</h5>
             </div>
@@ -32,7 +38,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('assemblies.*') ? 'bg-primary' : '' }}" href="{{ route('assemblies.index') }}">
+                    <a class="nav-link text-white {{ request()->routeIs('assemblies.*') ? 'bg-primary' : '' }}" href="{{ route('assemblies.dashboard') }}">
                         <i class="bi bi-people-fill me-2"></i>Asambleas
                     </a>
                 </li>
@@ -63,6 +69,53 @@
                 </li>
             </ul>
         </nav>
+
+        <!-- Mobile Sidebar -->
+        <div class="offcanvas offcanvas-start bg-dark d-lg-none" tabindex="-1" id="sidebar">
+            <div class="offcanvas-header">
+                <h5 class="text-white">Council Manager</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->routeIs('dashboard') ? 'bg-primary' : '' }}" href="{{ route('dashboard') }}">
+                            <i class="bi bi-house me-2"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">
+                            <i class="bi bi-briefcase me-2"></i>Ejecutiva
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->routeIs('documents.*') ? 'bg-primary' : '' }}" href="{{ route('documents.index') }}">
+                            <i class="bi bi-file-earmark me-2"></i>Documentos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->routeIs('assemblies.*') ? 'bg-primary' : '' }}" href="{{ route('assemblies.dashboard') }}">
+                            <i class="bi bi-people-fill me-2"></i>Asambleas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">
+                            <i class="bi bi-calculator me-2"></i>Administrativa Financiera
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">
+                            <i class="bi bi-shield-check me-2"></i>Contraloría Social
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('members.index') }}">
+                            <i class="bi bi-people me-2"></i>Miembros
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
         
         <div class="flex-grow-1">
@@ -96,8 +149,10 @@
                 </ol>
             </nav>
             
-            <main class="p-4">
-                @yield('content')
+            <main class="p-2 p-md-4">
+                <div class="container-fluid">
+                    @yield('content')
+                </div>
             </main>
         </div>
     </div>

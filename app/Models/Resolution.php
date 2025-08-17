@@ -13,4 +13,9 @@ class Resolution extends Model
         'description',
         'resolution',
     ];
+
+    public function assembly()
+    {
+        return $this->belongsTo(Assembly::class);
+    }
 }

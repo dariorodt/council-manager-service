@@ -23,5 +23,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('members', MemberController::class)->middleware('auth');
     Route::resource('documents', DocumentController::class)->middleware('auth');
     Route::post('documents/upload', [DocumentController::class, 'upload'])->name('documents.upload');
+    Route::get('assemblies/dashboard', [AssemblyController::class, 'dashboard'])->name('assemblies.dashboard')->middleware('auth');
     Route::resource('assemblies', AssemblyController::class)->middleware('auth');
 });

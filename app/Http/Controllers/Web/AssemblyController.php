@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Assembly;
 use App\Models\Member;
 use App\Models\Document;
+use Illuminate\Support\Str;
 
 class AssemblyController extends Controller
 {
@@ -104,5 +105,68 @@ class AssemblyController extends Controller
     {
         $assembly->delete();
         return redirect()->route('assemblies.index')->with('success', 'Assembly deleted successfully.');
+    }
+
+    public function dashboard(Request $request)
+    {
+        $period = $request->get('period', 12);
+        $type = $request->get('type');
+        
+        // Calculate average attendees (only completed assemblies)
+        $assemblies = Assembly::with('attendees')->where('status', 'Finalizada')->get();
+        $avgAttendees = $assemblies->avg(function($assembly) {
+            return $assembly->attendees->where('attended', 1)->count();
+        });
+        
+        // Last assembly attendees (only completed)
+        $lastAssembly = Assembly::with('attendees')->where('status', 'Finalizada')->latest('scheduled_date')->first();
+        $lastAttendees = $lastAssembly ? $lastAssembly->attendees->where('attended', 1)->count() : 0;
+        
+        // Previous assembly for comparison (only completed)
+        $prevAssembly = Assembly::with('attendees')->where('status', 'Finalizada')->where('id', '!=', $lastAssembly?->id)->latest('scheduled_date')->first();
+        $prevAttendees = $prevAssembly ? $prevAssembly->attendees->where('attended', 1)->count() : 0;
+        
+        // Calculate variations
+        $avgVariation = $prevAttendees > 0 ? (($avgAttendees - $prevAttendees) / $prevAttendees) * 100 : 0;
+        $lastVariation = $prevAttendees > 0 ? (($lastAttendees - $prevAttendees) / $prevAttendees) * 100 : 0;
+        
+        // Chart data (only completed assemblies)
+        $chartQuery = Assembly::with('attendees')
+            ->where('status', 'Finalizada')
+            ->where('scheduled_date', '>=', now()->subMonths($period))
+            ->orderBy('scheduled_date');
+            
+        if ($type) {
+            $chartQuery->where('type', $type);
+        }
+        
+        $chartAssemblies = $chartQuery->get();
+        $chartData = [
+            'labels' => $chartAssemblies->map(fn($a) => $a->scheduled_date->format('M Y'))->toArray(),
+            'attendees' => $chartAssemblies->map(fn($a) => $a->attendees->where('attended', 1)->count())->toArray(),
+            'average' => array_fill(0, $chartAssemblies->count(), $avgAttendees)
+        ];
+        
+        // Upcoming assemblies
+        $upcomingAssemblies = Assembly::where('scheduled_date', '>', now())
+            ->where('status', 'Programada')
+            ->orderBy('scheduled_date')
+            ->limit(5)
+            ->get();
+            
+        // Recent resolutions
+        $recentResolutions = \App\Models\Resolution::with('assembly')
+            ->latest()
+            ->limit(5)
+            ->get();
+        
+        if ($request->get('ajax')) {
+            return response()->json(compact('chartData'));
+        }
+        
+        return view('assemblies.dashboard', compact(
+            'avgAttendees', 'avgVariation', 'lastAttendees', 'lastVariation',
+            'chartData', 'upcomingAssemblies', 'recentResolutions'
+        ));
     }
 }
