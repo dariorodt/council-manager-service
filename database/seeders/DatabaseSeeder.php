@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call(AdminUserSeeder::class);
+        $this->call(CommitteeSeeder::class);
+        $this->call(CommitteeFunctionSeeder::class);
+        $this->call(MemberSeeder::class);
+        $this->call(DocumentSeeder::class);
         $this->call(AssemblySeeder::class);
     }
 }

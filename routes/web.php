@@ -25,4 +25,6 @@ Route::middleware('auth')->group(function () {
     Route::post('documents/upload', [DocumentController::class, 'upload'])->name('documents.upload');
     Route::get('assemblies/dashboard', [AssemblyController::class, 'dashboard'])->name('assemblies.dashboard')->middleware('auth');
     Route::resource('assemblies', AssemblyController::class)->middleware('auth');
+    Route::resource('committees', \App\Http\Controllers\Web\CommitteeController::class)->middleware('auth');
+    Route::resource('projects', \App\Http\Controllers\Web\ProjectController::class)->middleware('auth');
 });

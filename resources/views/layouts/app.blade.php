@@ -28,11 +28,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#">
-                        <i class="bi bi-briefcase me-2"></i>Ejecutiva
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link text-white {{ request()->routeIs('documents.*') ? 'bg-primary' : '' }}" href="{{ route('documents.index') }}">
                         <i class="bi bi-file-earmark me-2"></i>Documentos
                     </a>
@@ -41,6 +36,31 @@
                     <a class="nav-link text-white {{ request()->routeIs('assemblies.*') ? 'bg-primary' : '' }}" href="{{ route('assemblies.dashboard') }}">
                         <i class="bi bi-people-fill me-2"></i>Asambleas
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#ejecutivaMenu" role="button" aria-expanded="{{ request()->routeIs('committees.*') || request()->routeIs('projects.*') ? 'true' : 'false' }}">
+                        <span><i class="bi bi-briefcase me-2"></i>Ejecutiva</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('committees.*') || request()->routeIs('projects.*') ? 'show' : '' }}" id="ejecutivaMenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ request()->routeIs('committees.*') ? 'bg-primary' : '' }}" href="{{ route('committees.index') }}">
+                                    <i class="bi bi-people me-2"></i>Comités
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ request()->routeIs('projects.*') ? 'bg-primary' : '' }}" href="{{ route('projects.index') }}">
+                                    <i class="bi bi-folder me-2"></i>Proyectos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">
+                                    <i class="bi bi-list-task me-2"></i>Programas
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="#">
@@ -84,11 +104,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">
-                            <i class="bi bi-briefcase me-2"></i>Ejecutiva
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link text-white {{ request()->routeIs('documents.*') ? 'bg-primary' : '' }}" href="{{ route('documents.index') }}">
                             <i class="bi bi-file-earmark me-2"></i>Documentos
                         </a>
@@ -96,6 +111,26 @@
                     <li class="nav-item">
                         <a class="nav-link text-white {{ request()->routeIs('assemblies.*') ? 'bg-primary' : '' }}" href="{{ route('assemblies.dashboard') }}">
                             <i class="bi bi-people-fill me-2"></i>Asambleas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">
+                            <i class="bi bi-briefcase me-2"></i>Ejecutiva
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white ps-4 {{ request()->routeIs('committees.*') ? 'bg-primary' : '' }}" href="{{ route('committees.index') }}">
+                            <i class="bi bi-people me-2"></i>Comités
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white ps-4 {{ request()->routeIs('projects.*') ? 'bg-primary' : '' }}" href="{{ route('projects.index') }}">
+                            <i class="bi bi-folder me-2"></i>Proyectos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white ps-4" href="#">
+                            <i class="bi bi-list-task me-2"></i>Programas
                         </a>
                     </li>
                     <li class="nav-item">
