@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\LoginController;
 use App\Http\Controllers\Web\MemberController;
 use App\Http\Controllers\Web\DocumentController;
 use App\Http\Controllers\Web\AssemblyController;
+use App\Http\Controllers\Web\TaskController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::post('documents/upload', [DocumentController::class, 'upload'])->name('documents.upload');
     Route::get('assemblies/dashboard', [AssemblyController::class, 'dashboard'])->name('assemblies.dashboard')->middleware('auth');
     Route::resource('assemblies', AssemblyController::class)->middleware('auth');
+    Route::resource('tasks', TaskController::class)->only(['store', 'edit', 'update', 'destroy'])->middleware('auth');
     Route::resource('committees', \App\Http\Controllers\Web\CommitteeController::class)->middleware('auth');
     Route::resource('projects', \App\Http\Controllers\Web\ProjectController::class)->middleware('auth');
 });

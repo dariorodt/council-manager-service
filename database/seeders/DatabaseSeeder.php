@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CommitteeFunctionSeeder::class);
         $this->call(MemberSeeder::class);
         $this->call(DocumentSeeder::class);
+        $this->call(ProjectSeeder::class);
+        $this->call(TaskSeeder::class);
         $this->call(AssemblySeeder::class);
     }
 }
