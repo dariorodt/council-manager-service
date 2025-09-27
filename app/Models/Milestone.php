@@ -8,6 +8,7 @@ class Milestone extends Model
 {
     protected $fillable = [
         'task_id',
+        'project_id',
         'name',
         'description',
         'date'
@@ -17,8 +18,8 @@ class Milestone extends Model
         'date' => 'datetime'
     ];
 
-    public function task()
+    public function project()
     {
-        return $this->belongsTo(Task::class);
+        return $this->belongsTo(Project::class);
     }
 }

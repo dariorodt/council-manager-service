@@ -50,4 +50,9 @@ class Project extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function milestones()
+    {
+        return $this->hasMany(Milestone::class);
+    }
 }

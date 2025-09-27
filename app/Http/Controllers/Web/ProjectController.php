@@ -59,7 +59,7 @@ class ProjectController extends Controller
         $committees = Committee::all();
         $functions = CommitteeFunction::all();
         $members = Member::all();
-        $project->load(['responsibles', 'tasks']);
+        $project->load(['responsibles', 'tasks', 'milestones']);
         return view('projects.edit', compact('project', 'committees', 'functions', 'members'));
     }
 

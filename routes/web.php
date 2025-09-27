@@ -6,6 +6,9 @@ use App\Http\Controllers\Web\MemberController;
 use App\Http\Controllers\Web\DocumentController;
 use App\Http\Controllers\Web\AssemblyController;
 use App\Http\Controllers\Web\TaskController;
+use App\Http\Controllers\Web\MilestoneController;
+use App\Http\Controllers\Web\ProgramController;
+use App\Http\Controllers\Web\ResourceController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::get('assemblies/dashboard', [AssemblyController::class, 'dashboard'])->name('assemblies.dashboard')->middleware('auth');
     Route::resource('assemblies', AssemblyController::class)->middleware('auth');
     Route::resource('tasks', TaskController::class)->only(['store', 'edit', 'update', 'destroy'])->middleware('auth');
+    Route::resource('milestones', MilestoneController::class)->only(['store', 'edit', 'update', 'destroy'])->middleware('auth');
+    Route::resource('programs', ProgramController::class)->middleware('auth');
+    Route::resource('resources', ResourceController::class)->only(['store', 'edit', 'update', 'destroy'])->middleware('auth');
     Route::resource('committees', \App\Http\Controllers\Web\CommitteeController::class)->middleware('auth');
     Route::resource('projects', \App\Http\Controllers\Web\ProjectController::class)->middleware('auth');
 });

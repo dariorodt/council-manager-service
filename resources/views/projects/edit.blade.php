@@ -318,4 +318,404 @@ document.getElementById('taskForm').addEventListener('submit', function(e) {
     });
 });
 </script>
+
+<!-- Milestones Section -->
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Hitos del Proyecto</h5>
+        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#milestoneModal" onclick="openMilestoneModal()">
+            <i class="bi bi-flag"></i> Nuevo Hito
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($project->milestones as $milestone)
+                        <tr>
+                            <td><strong>{{ $milestone->name }}</strong></td>
+                            <td>{{ $milestone->date->format('d/m/Y') }}</td>
+                            <td>{{ Str::limit($milestone->description, 60) }}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-warning" onclick="editMilestone({{ $milestone->id }})" data-bs-toggle="modal" data-bs-target="#milestoneModal">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <form action="{{ route('milestones.destroy', $milestone) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar hito?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Milestone Modal -->
+<div class="modal fade" id="milestoneModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="milestoneModalTitle">Nuevo Hito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="milestoneForm" method="POST">
+                @csrf
+                <input type="hidden" id="milestoneMethod" name="_method" value="POST">
+                <input type="hidden" name="project_id" value="{{ $project->id }}">
+                
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="milestoneName" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="milestoneDate" name="date" 
+                               min="{{ $project->planned_start ? $project->planned_start->format('Y-m-d') : '' }}" 
+                               max="{{ $project->planned_end ? $project->planned_end->format('Y-m-d') : '' }}" 
+                               required>
+                        <div class="form-text">
+                            @if($project->planned_start && $project->planned_end)
+                                Debe estar entre {{ $project->planned_start->format('d/m/Y') }} y {{ $project->planned_end->format('d/m/Y') }}
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" id="milestoneDescription" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentMilestoneId = null;
+
+function openMilestoneModal() {
+    currentMilestoneId = null;
+    document.getElementById('milestoneModalTitle').textContent = 'Nuevo Hito';
+    document.getElementById('milestoneForm').action = '{{ route("milestones.store") }}';
+    document.getElementById('milestoneMethod').value = 'POST';
+    clearMilestoneForm();
+}
+
+function editMilestone(milestoneId) {
+    currentMilestoneId = milestoneId;
+    document.getElementById('milestoneModalTitle').textContent = 'Editar Hito';
+    document.getElementById('milestoneForm').action = `/milestones/${milestoneId}`;
+    document.getElementById('milestoneMethod').value = 'PUT';
+    
+    // Fetch milestone data
+    fetch(`/milestones/${milestoneId}/edit`)
+        .then(response => response.json())
+        .then(milestone => {
+            document.getElementById('milestoneName').value = milestone.name || '';
+            document.getElementById('milestoneDate').value = milestone.date ? milestone.date.slice(0, 10) : '';
+            document.getElementById('milestoneDescription').value = milestone.description || '';
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function clearMilestoneForm() {
+    document.getElementById('milestoneName').value = '';
+    document.getElementById('milestoneDate').value = '';
+    document.getElementById('milestoneDescription').value = '';
+}
+
+document.getElementById('milestoneForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const url = this.action;
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert('Error al guardar el hito');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el hito');
+    });
+});
+</script>
+
+<!-- Resources Section -->
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Recursos del Proyecto</h5>
+        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#resourceModal" onclick="openResourceModal()">
+            <i class="bi bi-box"></i> Nuevo Recurso
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Tarea</th>
+                        <th>Cantidad</th>
+                        <th>Costo Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($project->tasks as $task)
+                        @foreach($task->resources as $resource)
+                            <tr>
+                                <td><strong>{{ $resource->name }}</strong></td>
+                                <td><span class="badge bg-secondary">{{ $resource->type }}</span></td>
+                                <td>{{ $task->name }}</td>
+                                <td>{{ $resource->quantity }} {{ $resource->unity }}</td>
+                                <td>${{ number_format($resource->total_cost, 2) }}</td>
+                                <td><span class="badge bg-primary">{{ $resource->status }}</span></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-warning" onclick="editResource({{ $resource->id }})" data-bs-toggle="modal" data-bs-target="#resourceModal">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <form action="{{ route('resources.destroy', $resource) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar recurso?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Resource Modal -->
+<div class="modal fade" id="resourceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resourceModalTitle">Nuevo Recurso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="resourceForm" method="POST">
+                @csrf
+                <input type="hidden" id="resourceMethod" name="_method" value="POST">
+                
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="resourceName" name="name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tipo</label>
+                                <select class="form-select" id="resourceType" name="type" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="material">Material</option>
+                                    <option value="personal">Personal</option>
+                                    <option value="transporte">Transporte</option>
+                                    <option value="imprevistos">Imprevistos</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Tarea</label>
+                        <select class="form-select" id="resourceTaskId" name="task_id" required>
+                            <option value="">Seleccionar tarea...</option>
+                            @foreach($project->tasks as $task)
+                                <option value="{{ $task->id }}">{{ $task->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" id="resourceDescription" name="description" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Cantidad</label>
+                                <input type="number" class="form-control" id="resourceQuantity" name="quantity" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Unidad</label>
+                                <select class="form-select" id="resourceUnity" name="unity" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="kg">Kilogramos (kg)</option>
+                                    <option value="m">Metros (m)</option>
+                                    <option value="m2">Metros cuadrados (m²)</option>
+                                    <option value="m3">Metros cúbicos (m³)</option>
+                                    <option value="lt">Litros (lt)</option>
+                                    <option value="hrs">Horas (hrs)</option>
+                                    <option value="dias">Días</option>
+                                    <option value="unidad">Unidad</option>
+                                    <option value="paquete">Paquete</option>
+                                    <option value="caja">Caja</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Costo Unitario</label>
+                                <input type="number" class="form-control" id="resourceUnityCost" name="unity_cost" step="0.01" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Costo Total</label>
+                                <input type="number" class="form-control" id="resourceTotalCost" name="total_cost" step="0.01" min="0" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" id="resourceStatus" name="status">
+                                    <option value="planificado">Planificado</option>
+                                    <option value="en_stock">En Stock</option>
+                                    <option value="consumido">Consumido</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-info">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentResourceId = null;
+
+function openResourceModal() {
+    currentResourceId = null;
+    document.getElementById('resourceModalTitle').textContent = 'Nuevo Recurso';
+    document.getElementById('resourceForm').action = '{{ route("resources.store") }}';
+    document.getElementById('resourceMethod').value = 'POST';
+    clearResourceForm();
+}
+
+function editResource(resourceId) {
+    currentResourceId = resourceId;
+    document.getElementById('resourceModalTitle').textContent = 'Editar Recurso';
+    document.getElementById('resourceForm').action = `/resources/${resourceId}`;
+    document.getElementById('resourceMethod').value = 'PUT';
+    
+    // Fetch resource data
+    fetch(`/resources/${resourceId}/edit`)
+        .then(response => response.json())
+        .then(resource => {
+            document.getElementById('resourceName').value = resource.name || '';
+            document.getElementById('resourceType').value = resource.type || '';
+            document.getElementById('resourceTaskId').value = resource.task_id || '';
+            document.getElementById('resourceDescription').value = resource.description || '';
+            document.getElementById('resourceQuantity').value = resource.quantity || '';
+            document.getElementById('resourceUnity').value = resource.unity || '';
+            document.getElementById('resourceUnityCost').value = resource.unity_cost || '';
+            document.getElementById('resourceTotalCost').value = resource.total_cost || '';
+            document.getElementById('resourceStatus').value = resource.status || 'planificado';
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function clearResourceForm() {
+    document.getElementById('resourceName').value = '';
+    document.getElementById('resourceType').value = '';
+    document.getElementById('resourceTaskId').value = '';
+    document.getElementById('resourceDescription').value = '';
+    document.getElementById('resourceQuantity').value = '';
+    document.getElementById('resourceUnity').value = '';
+    document.getElementById('resourceUnityCost').value = '';
+    document.getElementById('resourceTotalCost').value = '';
+    document.getElementById('resourceStatus').value = 'planificado';
+}
+
+// Auto-calculate total cost
+document.addEventListener('input', function(e) {
+    if (e.target.id === 'resourceQuantity' || e.target.id === 'resourceUnityCost') {
+        const quantity = parseFloat(document.getElementById('resourceQuantity').value) || 0;
+        const unityCost = parseFloat(document.getElementById('resourceUnityCost').value) || 0;
+        const totalCost = quantity * unityCost;
+        document.getElementById('resourceTotalCost').value = totalCost.toFixed(2);
+    }
+});
+
+document.getElementById('resourceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const url = this.action;
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert('Error al guardar el recurso');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el recurso');
+    });
+});
+</script>
 @endsection

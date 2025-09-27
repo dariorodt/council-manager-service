@@ -63,8 +63,5 @@ class Task extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    public function milestones()
-    {
-        return $this->hasMany(Milestone::class);
-    }
+
 }
