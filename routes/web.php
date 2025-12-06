@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\TaskController;
 use App\Http\Controllers\Web\MilestoneController;
 use App\Http\Controllers\Web\ProgramController;
 use App\Http\Controllers\Web\ResourceController;
+use App\Http\Controllers\Web\InvoiceController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('milestones', MilestoneController::class)->only(['store', 'edit', 'update', 'destroy'])->middleware('auth');
     Route::resource('programs', ProgramController::class)->middleware('auth');
     Route::resource('resources', ResourceController::class)->only(['store', 'edit', 'update', 'destroy'])->middleware('auth');
+    Route::resource('invoices', InvoiceController::class)->only(['store', 'edit', 'update', 'destroy'])->middleware('auth');
     Route::resource('committees', \App\Http\Controllers\Web\CommitteeController::class)->middleware('auth');
     Route::resource('projects', \App\Http\Controllers\Web\ProjectController::class)->middleware('auth');
 });

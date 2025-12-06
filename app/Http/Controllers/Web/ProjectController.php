@@ -59,8 +59,9 @@ class ProjectController extends Controller
         $committees = Committee::all();
         $functions = CommitteeFunction::all();
         $members = Member::all();
-        $project->load(['responsibles', 'tasks', 'milestones']);
-        return view('projects.edit', compact('project', 'committees', 'functions', 'members'));
+        $documents = \App\Models\Document::all();
+        $project->load(['responsibles', 'tasks.invoices', 'tasks.resources', 'milestones']);
+        return view('projects.edit', compact('project', 'committees', 'functions', 'members', 'documents'));
     }
 
     public function update(Request $request, Project $project)

@@ -718,4 +718,231 @@ document.getElementById('resourceForm').addEventListener('submit', function(e) {
     });
 });
 </script>
+
+<!-- Invoices Section -->
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Facturas del Proyecto</h5>
+        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#invoiceModal" onclick="openInvoiceModal()">
+            <i class="bi bi-receipt"></i> Nueva Factura
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Proveedor</th>
+                        <th>Tarea</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Documento</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($project->tasks as $task)
+                        @foreach($task->invoices as $invoice)
+                            <tr>
+                                <td><strong>{{ $invoice->number }}</strong></td>
+                                <td>{{ $invoice->provider }}</td>
+                                <td>{{ $task->name }}</td>
+                                <td>{{ $invoice->invoice_date->format('d/m/Y') }}</td>
+                                <td>${{ number_format($invoice->total, 2) }}</td>
+                                <td><span class="badge bg-primary">{{ $invoice->status }}</span></td>
+                                <td>
+                                    @if($invoice->document)
+                                        <a href="{{ route('documents.show', $invoice->document) }}" class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-file-earmark"></i>
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Sin documento</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-warning" onclick="editInvoice({{ $invoice->id }})" data-bs-toggle="modal" data-bs-target="#invoiceModal">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <form action="{{ route('invoices.destroy', $invoice) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar factura?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Invoice Modal -->
+<div class="modal fade" id="invoiceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="invoiceModalTitle">Nueva Factura</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="invoiceForm" method="POST">
+                @csrf
+                <input type="hidden" id="invoiceMethod" name="_method" value="POST">
+                
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Número de Factura</label>
+                                <input type="text" class="form-control" id="invoiceNumber" name="number" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Fecha</label>
+                                <input type="date" class="form-control" id="invoiceDate" name="invoice_date" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Proveedor</label>
+                                <input type="text" class="form-control" id="invoiceProvider" name="provider" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Total</label>
+                                <input type="number" class="form-control" id="invoiceTotal" name="total" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tarea</label>
+                                <select class="form-select" id="invoiceTaskId" name="task_id" required>
+                                    <option value="">Seleccionar tarea...</option>
+                                    @foreach($project->tasks as $task)
+                                        <option value="{{ $task->id }}">{{ $task->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" id="invoiceStatus" name="status" required>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Pagada">Pagada</option>
+                                    <option value="Vencida">Vencida</option>
+                                    <option value="Cancelada">Cancelada</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Documento Asociado</label>
+                        <select class="form-select" id="invoiceDocumentId" name="document_id">
+                            <option value="">Sin documento</option>
+                            @foreach($documents as $document)
+                                <option value="{{ $document->id }}">{{ $document->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" id="invoiceDescription" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentInvoiceId = null;
+
+function openInvoiceModal() {
+    currentInvoiceId = null;
+    document.getElementById('invoiceModalTitle').textContent = 'Nueva Factura';
+    document.getElementById('invoiceForm').action = '{{ route("invoices.store") }}';
+    document.getElementById('invoiceMethod').value = 'POST';
+    clearInvoiceForm();
+}
+
+function editInvoice(invoiceId) {
+    currentInvoiceId = invoiceId;
+    document.getElementById('invoiceModalTitle').textContent = 'Editar Factura';
+    document.getElementById('invoiceForm').action = `/invoices/${invoiceId}`;
+    document.getElementById('invoiceMethod').value = 'PUT';
+    
+    // Fetch invoice data
+    fetch(`/invoices/${invoiceId}/edit`)
+        .then(response => response.json())
+        .then(invoice => {
+            document.getElementById('invoiceNumber').value = invoice.number || '';
+            document.getElementById('invoiceDate').value = invoice.invoice_date || '';
+            document.getElementById('invoiceProvider').value = invoice.provider || '';
+            document.getElementById('invoiceTotal').value = invoice.total || '';
+            document.getElementById('invoiceTaskId').value = invoice.task_id || '';
+            document.getElementById('invoiceStatus').value = invoice.status || 'Pendiente';
+            document.getElementById('invoiceDocumentId').value = invoice.document_id || '';
+            document.getElementById('invoiceDescription').value = invoice.description || '';
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function clearInvoiceForm() {
+    document.getElementById('invoiceNumber').value = '';
+    document.getElementById('invoiceDate').value = '';
+    document.getElementById('invoiceProvider').value = '';
+    document.getElementById('invoiceTotal').value = '';
+    document.getElementById('invoiceTaskId').value = '';
+    document.getElementById('invoiceStatus').value = 'Pendiente';
+    document.getElementById('invoiceDocumentId').value = '';
+    document.getElementById('invoiceDescription').value = '';
+}
+
+document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const url = this.action;
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert('Error al guardar la factura');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la factura');
+    });
+});
+</script>
 @endsection
